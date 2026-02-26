@@ -3,6 +3,31 @@ const router = express.Router();
 const User = require("../models/users");
 const otp = require("../config/gen-otp"); //genearte otp
 const Otp = require("../models/otp"); // store on db
+const nodemailer = require('nodemailer');
+require("dotenv").config();
+
+
+// Create a transporter object
+const transporter = nodemailer.createTransport({
+    service: "gmail",
+    auth: {
+        user: process.env.SENDER_MAIL,
+        pass: process.env.APP_PASS,
+    }
+});
+
+let mailOptions;
+
+// Configure the mailoptions object
+const sendCode = async (otp, email) => {
+    mailOptions = {
+        from: 'bmtahsin3269@gmail.com',
+        to: email,
+        subject: 'Your OTP Code',
+        text: `Your OTP is: ${otp}`
+    };
+    return mailOptions
+}
 
 // Check db for the target email
 router.post("/api/users/check-email", async (req, res) => {
@@ -13,6 +38,8 @@ router.post("/api/users/check-email", async (req, res) => {
         const user = await User.findOne({ email })
         if (user) {
             // console.log("otp sent", email, otp)
+            sendCode(otp, email);
+            // console.log(mailOptions);
             const newOtp = new Otp({
                 otp: otp,
                 email: email
@@ -24,6 +51,15 @@ router.post("/api/users/check-email", async (req, res) => {
             } catch (error) {
                 console.error('Error inserting document:', error.message);
             }
+
+            // send otp
+            transporter.sendMail(mailOptions, function (error, info) {
+                if (error) {
+                    console.log("Error:", error);
+                } else {
+                    console.log('Email sent: ' + info.response);
+                }
+            });
 
             return res.json({ exists: true, message: "Email is registered" })
         } else {
