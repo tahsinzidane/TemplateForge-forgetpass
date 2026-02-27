@@ -4,20 +4,10 @@ const User = require("../models/users");
 const otp = require("../config/gen-otp"); //genearte otp
 const Otp = require("../models/otp"); // store on db
 const nodemailer = require('nodemailer');
-require("dotenv").config();
+const transporter = require("../config/mailer");
 
-
-// Create a transporter object
-const transporter = nodemailer.createTransport({
-    service: "gmail",
-    auth: {
-        user: process.env.SENDER_MAIL,
-        pass: process.env.APP_PASS,
-    }
-});
 
 let mailOptions;
-
 // Configure the mailoptions object
 const sendCode = async (otp, email) => {
     mailOptions = {
@@ -71,4 +61,4 @@ router.post("/api/users/check-email", async (req, res) => {
     }
 })
 
-module.exports = router
+module.exports = router;

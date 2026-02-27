@@ -18,6 +18,7 @@ app.get("/", (req, res) => {
     res.send("server runngin");
 })
 app.use(require("./src/routes/checkmail"));
+app.use(require("./src/routes/verification"));
 
 // Error handling middleware
 app.use((err, req, res, next) => {
