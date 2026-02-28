@@ -11,7 +11,8 @@ app.use(express.urlencoded({
     extended: true
 }));
 
-connectDB //db connection
+//db connection
+connectDB
 
 // Besic routes
 app.get("/", (req, res) => {
@@ -19,6 +20,7 @@ app.get("/", (req, res) => {
 })
 app.use(require("./src/routes/checkmail"));
 app.use(require("./src/routes/verification"));
+app.use(require("./src/routes/update-pass"));
 
 // Error handling middleware
 app.use((err, req, res, next) => {

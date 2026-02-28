@@ -1,17 +1,18 @@
 const express = require("express");
 const router = express.Router();
 const User = require("../models/users");
-const otp = require("../config/gen-otp"); //genearte otp
-const Otp = require("../models/otp"); // store on db
+const otp = require("../config/gen-otp");
+const Otp = require("../models/otp");
 const nodemailer = require('nodemailer');
 const transporter = require("../config/mailer");
+require("dotenv").config();
 
 
 let mailOptions;
 // Configure the mailoptions object
 const sendCode = async (otp, email) => {
     mailOptions = {
-        from: 'bmtahsin3269@gmail.com',
+        from: process.env.SENDER_MAIL,
         to: email,
         subject: 'Your OTP Code',
         text: `Your OTP is: ${otp}`
